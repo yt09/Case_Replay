@@ -12,7 +12,7 @@ namespace YT_Replay
     public class ReplayManager : MonoBehaviour
     {
         public int timePos = 0;
-        public float startTimePos = 0;
+        private float startTimePos = 0;
 
         public Transform target;
 
@@ -33,7 +33,7 @@ namespace YT_Replay
 
         private void Update()
         {
-            //按下Q键回放之前的操作
+            //按下R键回放之前的操作
             if (Input.GetKeyDown(KeyCode.R))
             {
                 StopAllCoroutines();
@@ -43,28 +43,25 @@ namespace YT_Replay
                 timePos = 0;
                 isReplay = true;
             }
-            if (isReplay)
+            if (isReplay && Time.realtimeSinceStartup - this.startTimePos >= replayInterval)
             {
-                if (Time.realtimeSinceStartup - this.startTimePos >= replayInterval)
+                timePos++;
+                startTimePos = Time.realtimeSinceStartup;
+
+                if (this.readyToReplayData.Count != 0)
                 {
-                    timePos++;
-                    startTimePos = Time.realtimeSinceStartup;
+                    RecordObjectInfo curState = this.readyToReplayData.Peek();
 
-                    if (this.readyToReplayData.Count != 0)
+                    if (curState.TimePos == timePos)
                     {
-                        RecordObjectInfo curState = this.readyToReplayData.Peek();
-
-                        if (curState.TimePos == timePos)
-                        {
-                            target.transform.position = curState.VectorPos;
-                            curState = this.readyToReplayData.Dequeue();
-                        }
+                        target.transform.position = curState.VectorPos;
+                        curState = this.readyToReplayData.Dequeue();
                     }
-                    else
-                    {
-                        isReplay = false;
-                        return;
-                    }
+                }
+                else
+                {
+                    isReplay = false;
+                    return;
                 }
             }
         }

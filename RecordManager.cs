@@ -2,6 +2,7 @@
 using System.Collections;
 using System.IO;
 using YT_Replay;
+using System;
 
 namespace YT_Replay
 {
@@ -26,7 +27,7 @@ namespace YT_Replay
         private float recordInterval;
 
         //判断位置是否改变
-        protected Vector3 cachePosition = new Vector3(1000.0f, 0f, 0f);
+        protected Vector3 cachePosition = new Vector3(0f, 0f, 0f);
 
         //流文件
         private StreamWriter streamWriter;
@@ -58,7 +59,6 @@ namespace YT_Replay
         //写入文件
         private void WriteData(string saveData)
         {
-            Debug.Log(saveData);
             streamWriter.WriteLine(saveData);
         }
 

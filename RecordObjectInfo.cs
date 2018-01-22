@@ -2,17 +2,21 @@
 using System.Collections;
 
 using System.Text;
+using System;
 
 namespace YT_Replay
 {
     /// <summary>
     /// 先实现,在优化
-    ///
-    ///
     /// 记录一个物体在回放系统中,需要存储的所有信息
     /// </summary>
     public class RecordObjectInfo
     {
+        /// <summary>
+        /// 场景中需要记录的物体的唯一识别码 集合
+        /// </summary>
+        public static Hashtable ReplayIdentityHashtable = new Hashtable();
+
         public int TimePos;
 
         //位置
@@ -55,6 +59,31 @@ namespace YT_Replay
             this.VectorPos.x = float.Parse(Pos[0]);
             this.VectorPos.y = float.Parse(Pos[1]);
             this.VectorPos.z = float.Parse(Pos[2]);
+        }
+
+        /// <summary>
+        /// 生成唯一随机数
+        /// </summary>
+        /// <param name="num">需要生成多少个唯一识别码</param>
+        /// <returns></returns>
+        public static Hashtable GetHashtableRandomNum(int num)
+        {
+            System.Random random = new System.Random((int)DateTime.Now.Ticks);
+            for (int i = 0; ReplayIdentityHashtable.Count < num; i++)//如果ReplayIdentityHashtable.Count 不到 num 会永远循环
+            {
+                short nValue = (short)random.Next();
+
+                if (!ReplayIdentityHashtable.ContainsValue(nValue))
+                {
+                    ReplayIdentityHashtable.Add(i, nValue);
+                }
+                if (i - num >= 10000)
+                {
+                    throw new OperationCanceledException("生成物体唯一识别码发送错误");
+                }
+            }
+
+            return ReplayIdentityHashtable;
         }
     }
 }
