@@ -3,19 +3,20 @@ using System.Collections;
 using System.IO;
 using YT_Replay;
 using System;
+using System.Collections.Generic;
 
 namespace YT_Replay
 {
     /// <summary>
     /// 记录管理类,控制什么时候开始记录
     /// </summary>
-    public class RecordManager : MonoBehaviour
+    public class RecordManager : MonoSingleton<RecordManager>
     {
         //时间点 记录次数
         public int timePos;
 
-        //记录的目标
-        public GameObject target;
+        //记录的目标 多个
+        public List<GameObject> ReplayObjectTargetList;
 
         //开始记录的时间
         public float startRecordTime;
@@ -31,8 +32,6 @@ namespace YT_Replay
 
         //流文件
         private StreamWriter streamWriter;
-
-        private RecordObjectInfo myRecordObjectInfo = new RecordObjectInfo();
 
         private void Start()
         {
@@ -71,26 +70,28 @@ namespace YT_Replay
 
         private void Update()
         {
-            //timePos = Time.realtimeSinceStartup*100;
             string curDataStr = string.Empty;
             if (Time.realtimeSinceStartup - startRecordTime >= recordInterval)
             {
-                Debug.Log("记录");
                 timePos++;
-                curDataStr = RecordObjectInfo.TimePositionToString(timePos, target.transform);
-                if (!cachePosition.Equals(target.transform.localPosition))
-                {
-                    WriteData(curDataStr);
-                    this.cachePosition = this.target.transform.localPosition;
-                }
-                this.startRecordTime = Time.realtimeSinceStartup;
+
+                //修改成对多个物体
+
+                //curDataStr = RecordObjectInfo.TimePositionToString(timePos, target.transform);
+                //if (!cachePosition.Equals(target.transform.localPosition))
+                //{
+                //    Debug.Log("记录");
+                //    WriteData(curDataStr);
+                //    this.cachePosition = this.target.transform.localPosition;
+                //}
+                //this.startRecordTime = Time.realtimeSinceStartup;
             }
             //按下E键停止记录
             if (Input.GetKeyDown(KeyCode.E))
             {
                 Finished();
                 enabled = false;
-            }
+            }  //按下E键停止记录
         }
     }
 }

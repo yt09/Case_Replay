@@ -9,7 +9,7 @@ namespace YT_Replay
     /// <summary>
     /// 回放管理器类,控制系统回放
     /// </summary>
-    public class ReplayManager : MonoBehaviour
+    public class ReplayManager : MonoSingleton<ReplayManager>
     {
         public int timePos = 0;
         private float startTimePos = 0;
